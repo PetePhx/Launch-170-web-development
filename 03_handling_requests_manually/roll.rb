@@ -16,7 +16,7 @@ server = TCPServer.new("localhost", 3003)
 loop do
   client = server.accept
   request_line = client.gets
-  next if !request_line || request_line =~ /favicon/
+  next unless request_line && request_line =~ /rolls=\d+&sides=\d+/
   puts request_line
 
   http_method, path, params = parse_request(request_line)
