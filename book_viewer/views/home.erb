@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>The Adventures of Sherlock Holmes</title>
+    <!-- <title>The Adventures of Sherlock Holmes</title> -->
+    <title><%= @title %></title>
 
     <link rel="stylesheet" href="stylesheets/pure-min.css">
     <link rel="stylesheet" href="stylesheets/fonts.css">
@@ -23,9 +24,13 @@
               <a class="pure-menu-heading" href="/">Table of Contents</a>
 
               <ul class="pure-menu-list">
+                <% @contents.each do |chap| %>
                 <li class="pure-menu-item">
-                  <a href="#" class="pure-menu-link">Chapter 1</a>
+                  <a href="#" class="pure-menu-link">
+                    <%= chap %>
+                  </a>
                 </li>
+                <% end %>
               </ul>
           </div>
       </div>
@@ -41,9 +46,13 @@
 
           <div class="pure-menu">
             <ul class="pure-menu-list">
+              <% @contents.each_with_index do |chap, idx| %>
               <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link">Chapter 1</a>
+                <a href="#" class="pure-menu-link">
+                  Chapter <%= idx + 1 %>: <%= chap %>
+                </a>
               </li>
+              <% end %>
             </ul>
           </div>
         </div>
