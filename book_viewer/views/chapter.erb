@@ -6,9 +6,9 @@
 
     <title><%= @title %></title>
 
-    <link rel="stylesheet" href="stylesheets/pure-min.css">
-    <link rel="stylesheet" href="stylesheets/fonts.css">
-    <link rel="stylesheet" href="stylesheets/book_viewer.css">
+    <link rel="stylesheet" href="/stylesheets/pure-min.css">
+    <link rel="stylesheet" href="/stylesheets/fonts.css">
+    <link rel="stylesheet" href="/stylesheets/book_viewer.css">
 </head>
 
 <body>
@@ -41,19 +41,11 @@
         </div>
 
         <div class="content">
-          <h2 class="content-subhead">Table of Contents</h2>
+          <h2 class="content-subhead">Chapter 1</h2>
 
-          <div class="pure-menu">
-            <ul class="pure-menu-list">
-              <% @contents.each_with_index do |chap, idx| %>
-              <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link">
-                  Chapter <%= idx + 1 %>: <%= chap %>
-                </a>
-              </li>
-              <% end %>
-            </ul>
-          </div>
+          <% @chapter.split("\n\n").each do |paragraph| %>
+            <p><%= paragraph %></p>
+          <% end %>
         </div>
       </div>
   </div>
