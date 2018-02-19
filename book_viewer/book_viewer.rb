@@ -20,6 +20,11 @@ end
 get "/chapters/:number" do
   @number = params['number'].to_i
   @title = "Chapter #{@number}: #{@contents[@number - 1]}"
+  redirect to("/"), 301 unless (1..@contents.size).cover? @number
   @chapter = File.read("data/chp#{@number}.txt")
   erb :chapter
+end
+
+not_found do
+  redirect to("/")
 end
