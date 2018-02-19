@@ -1,0 +1,22 @@
+<doctype! html>
+<head>
+</head>
+
+<body>
+  <div>
+    <h2>Public Files</h2>
+    <h4>order: <% case @order
+                  when :ascending %>
+                  <%= @order %> <a href="/?order=descending">descending</a>
+                <% when :descending %>
+                <a href="/?order=ascending">ascending</a> <%= @order %>
+                <% end %>
+    </h4>
+    <% @files.each do |f| %>
+      <p><a href="<%= f %>" >
+        <%= f %>
+        </a>
+      </p>
+    <% end %>
+  </div>
+</body>
