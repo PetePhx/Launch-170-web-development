@@ -12,11 +12,14 @@
                 <a href="/?order=ascending">ascending</a> <%= @order %>
                 <% end %>
     </h4>
-    <% @files.each do |f| %>
-      <p><a href="<%= f %>" >
-        <%= f %>
-        </a>
-      </p>
-    <% end %>
+    <ul>
+      <% @files.each do |f| %>
+        <li>
+          <a href="<%= f %>" >
+            <%= f %>
+          </a><br><br>
+        </li>
+      <% end %>
+    </ul>
   </div>
 </body>

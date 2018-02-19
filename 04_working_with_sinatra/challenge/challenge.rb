@@ -36,8 +36,7 @@ Requirements
       - display a link to change the order.
         - depending on @order, link displays descending/ascending
         - when clicked, @order should be changed. then, "/" displayed.
-
-
+        - change @order by passing ?order=... parameter in teh url
 =end
 
 require "sinatra"
@@ -51,6 +50,5 @@ get "/" do
            when :ascending then @files.sort
            when :descending then @files.sort.reverse
            end
-  p @files
   erb :home
 end
