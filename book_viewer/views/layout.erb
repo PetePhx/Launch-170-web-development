@@ -20,9 +20,11 @@
           <a class="pure-menu-heading" href="/">Table of Contents</a>
 
           <ul class="pure-menu-list">
-            <% @contents.each do |chapter| %>
+            <% @contents.each_with_index do |chapter, idx| %>
               <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link"><%= chapter %></a>
+                <a href="/chapters/<%= idx + 1 %>" class="pure-menu-link">
+                  <%= "#{idx + 1}. #{chapter}" %>
+                </a>
               </li>
             <% end %>
           </ul>
