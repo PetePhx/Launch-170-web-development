@@ -11,12 +11,16 @@
   <% else %>
     <h3 class="content-subhead">Results for '<%= @query %>'</h3>
     <ul>
-    <% @results.each do |chap, idx, par| %>
-      <li><a href="/chapters/<%= chap %>#<%= idx %>">
-            <%= @contents[chap - 1] %>: paragraph <%= idx %>:
-          </a>
-          <p> <%= par %>...</p>
-      </li>
+    <% @results.group_by { |chap, idx, par| chap }.each do |chap, arr| %>
+      <li><h4><%= @contents[chap - 1] %></h4></li>
+      <% arr.each do |_, idx, par| %>
+        <ul>
+          <li><a href="/chapters/<%= chap %>#<%= idx %>"> paragraph <%= idx %>:
+              </a>
+              <p> <%= par %>...</p>
+          </li>
+        </ul>
+      <% end %>
     <% end %>
     </ul>
   <% end %>
