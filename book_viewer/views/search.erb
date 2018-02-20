@@ -4,3 +4,14 @@
   <input name="query" value="<%= params[:query] %>">
   <button type="submit">Search</button>
 </form>
+
+<% unless @query.nil? || @query.empty? || !@query.match(/\w/) %>
+  <% if @results.empty? %>
+    <p>No matches were found for '<%= @query %>'. Sorry not sorry! :)</p>
+  <% else %>
+    <h4>Results for '<%= @query %>'</h4>
+    <% @results.each do |chap| %>
+      <p><a href="/chapters/<%= chap %>"><%= @contents[chap - 1] %></a></p>
+    <% end %>
+  <% end %>
+<% end %>

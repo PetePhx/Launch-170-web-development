@@ -26,6 +26,13 @@ get "/chapters/:number" do
 end
 
 get "/search" do
+  @query = params['query']
+  @results = []
+  if !@query.nil? && !@query.empty? && @query.match(/\w/)
+    @results = (1..@contents.size).select do |num|
+      File.read("data/chp#{num}.txt").match(@query)
+    end
+  end
   erb :search
 end
 
