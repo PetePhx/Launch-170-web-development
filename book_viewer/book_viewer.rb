@@ -4,7 +4,9 @@ require "tilt/erubis"
 
 helpers do
   def in_pargraphs(str)
-    str.split("\n\n").map { |e| "<p>#{e}</p>" }.join("\n")
+    str.split("\n\n")
+       .map.with_index { |e, idx| "<p, id=#{idx}>#{e}</p>" }
+       .join("\n")
   end
 end
 
@@ -27,7 +29,7 @@ end
 
 get "/search" do
   @query = params['query']
-  @results = chapters_matching
+  chapters_matching
   erb :search
 end
 
@@ -38,7 +40,11 @@ end
 def chapters_matching
   @results = []
   return @results unless !@query.nil? && !@query.empty? && @query.match(/\w/)
-  (1..@contents.size).select do |num|
-    File.read("data/chp#{num}.txt").match(@query)
+  (1..@contents.size).each do |chp|
+    File.read("data/chp#{chp}.txt").split("\n\n")
+        .each_with_index do |par, idx|
+          @results << [chp, idx, par] if par.match(@query)
+        end
   end
+  @results
 end
