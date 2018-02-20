@@ -27,15 +27,18 @@ end
 
 get "/search" do
   @query = params['query']
-  @results = []
-  if !@query.nil? && !@query.empty? && @query.match(/\w/)
-    @results = (1..@contents.size).select do |num|
-      File.read("data/chp#{num}.txt").match(@query)
-    end
-  end
+  @results = chapters_matching
   erb :search
 end
 
 not_found do
   redirect to("/")
+end
+
+def chapters_matching
+  @results = []
+  return @results unless !@query.nil? && !@query.empty? && @query.match(/\w/)
+  (1..@contents.size).select do |num|
+    File.read("data/chp#{num}.txt").match(@query)
+  end
 end

@@ -9,9 +9,11 @@
   <% if @results.empty? %>
     <p>No matches were found for '<%= @query %>'. Sorry not sorry! :)</p>
   <% else %>
-    <h4>Results for '<%= @query %>'</h4>
+    <h3 class="content-subhead">Results for '<%= @query %>'</h3>
+    <ul>
     <% @results.each do |chap| %>
-      <p><a href="/chapters/<%= chap %>"><%= @contents[chap - 1] %></a></p>
+      <li><a href="/chapters/<%= chap %>"><%= @contents[chap - 1] %></a></li>
     <% end %>
+    </ul>
   <% end %>
 <% end %>
