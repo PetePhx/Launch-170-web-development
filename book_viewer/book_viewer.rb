@@ -8,6 +8,10 @@ helpers do
        .map.with_index { |e, idx| "<p, id=#{idx}>#{e}</p>" }
        .join("\n")
   end
+
+  def paragraph_highlight(par, word)
+    par.gsub(word, "<strong>#{word}</strong>")
+  end
 end
 
 before do

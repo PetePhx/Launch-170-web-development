@@ -17,7 +17,7 @@
         <ul>
           <li><a href="/chapters/<%= chap %>#<%= idx %>"> paragraph <%= idx %>:
               </a>
-              <p> <%= par %>...</p>
+              <p> <%= paragraph_highlight(par, @query) %></p>
           </li>
         </ul>
       <% end %>
