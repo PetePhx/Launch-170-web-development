@@ -1,0 +1,6 @@
+<div>
+  <h2>Current Users in the Inventory:</h2>
+  <% @users.each do |name, _| %>
+    <p><a href="/users/<%= name %>"><%= name %><a></p>
+  <% end %>
+</div>

@@ -1,0 +1,15 @@
+<div>
+  <p><strong>Name:</strong> <%= @username.capitalize %></p>
+  <p><strong>Email:</strong> <%= @users[@username][:email] %>
+  <p><strong>Interests:</strong>
+    <%= @users[@username][:interests].join(", ") %>
+  </p>
+</div>
+
+<div>
+  <br><br>
+  <h3>Other Users Available in the Inventory:</h3>
+  <% @users.reject { |k,_| k == @username }.each do |name, _| %>
+    <p><a href = "/users/<%= name %>"><%= name %></a></p>
+  <% end %>
+</div>

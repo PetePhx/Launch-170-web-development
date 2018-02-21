@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%= @title %></title>
+  </head>
+
+  <body>
+    <%= yield %>
+
+    <div>
+      <p>
+        There are a total of <%= @users.size %> users with
+        <%= count_interests %> interests.
+      </p>
+    </div>
+  </body>
+</html>
