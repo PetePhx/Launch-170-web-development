@@ -4,9 +4,22 @@ require "sinatra/content_for"
 require "tilt/erubis"
 
 
-get "/" do
+before do
   @files = Dir.entries("./data")
               .reject { |f| File.directory? f }
               .sort
-  erb :home
+end
+
+get "/" do
+  erb :index
+end
+
+get "/:file" do |file|
+  redirect not_found, 301 unless @files.include? file
+  @text = File.read("data/#{file}")
+  erb :text
+end
+
+not_found do
+  "Bad URL."
 end
