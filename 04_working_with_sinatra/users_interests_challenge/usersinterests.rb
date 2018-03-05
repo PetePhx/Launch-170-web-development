@@ -53,5 +53,5 @@ get "/users/:name" do
 end
 
 not_found do
-  redirect to("/")
+  redirect to("/"), 301
 end
