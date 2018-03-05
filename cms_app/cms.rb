@@ -5,5 +5,8 @@ require "tilt/erubis"
 
 
 get "/" do
-  "Getting started."
+  @files = Dir.entries("./data")
+              .reject { |f| File.directory? f }
+              .sort
+  erb :home
 end
