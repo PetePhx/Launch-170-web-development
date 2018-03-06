@@ -16,8 +16,8 @@ end
 
 get "/:file" do |file|
   redirect not_found, 301 unless @files.include? file
-  @text = File.read("data/#{file}")
-  erb :text
+  headers["Content-Type"] = "text/plain"
+  File.read("data/#{file}")
 end
 
 not_found do
