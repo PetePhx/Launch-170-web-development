@@ -2,9 +2,15 @@ require "sinatra"
 require "sinatra/reloader" if development?
 require "sinatra/content_for"
 require "tilt/erubis"
+require "redcarpet"
 
 configure do
   enable :sessions
+end
+
+def render_markdown(text)
+  markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+  markdown.render(text)
 end
 
 before do
@@ -20,11 +26,17 @@ end
 
 get "/:file" do |file|
   unless @files.include? file
-    session[:error] = "#{file} does not exist."
+    session[:error] = "#{file} does not exist. :)"
     redirect "/"
   end
-  headers["Content-Type"] = "text/plain;charset=utf-8"
-  File.read("#{@root}/data/#{file}")
+
+  case file.split('.').last
+  when 'md'
+    render_markdown File.read("#{@root}/data/#{file}")
+  when 'txt'
+    headers["Content-Type"] = "text/plain;charset=utf-8"
+    File.read("#{@root}/data/#{file}")
+  end
 end
 
 # not_found do
