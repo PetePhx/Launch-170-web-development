@@ -47,8 +47,8 @@ end
 
 get "/:file/edit" do |file|
   @file = file
-  @content = File.read("#{@root}/data/#{@file}")
   check_exists(@file)
+  @content = File.read("#{@root}/data/#{@file}")
 
   erb :edit
 end
