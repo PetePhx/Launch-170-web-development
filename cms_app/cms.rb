@@ -17,7 +17,7 @@ end
 def load_file(file)
   case File.extname(file)
   when '.md'
-    render_markdown File.read File.join(data_path, file)
+    erb render_markdown File.read File.join(data_path, file)
   when '.txt'
     headers["Content-Type"] = "text/plain;charset=utf-8"
     File.read("#{data_path}/#{file}")
@@ -41,6 +41,7 @@ before do
   @files = Dir.entries(data_path)
               .reject { |f| File.directory? f }
               .sort
+  @title = "CMS"
 end
 
 get "/" do
@@ -54,6 +55,7 @@ end
 
 get "/:file/edit" do |file|
   check_exists(file)
+  @title += " | #{file}"
   @file = file
   @content = File.read File.join(data_path, @file)
 
