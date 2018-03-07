@@ -25,8 +25,7 @@ def load_file(file)
 end
 
 def render_markdown(text)
-  markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-  markdown.render(text)
+  Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(text)
 end
 
 def data_path
