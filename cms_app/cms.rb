@@ -15,12 +15,12 @@ def check_exists(file)
 end
 
 def load_file(file)
-  case file.split('.').last
-  when 'md'
-    render_markdown File.read("#{@root}/data/#{file}")
-  when 'txt'
+  case File.extname(file)
+  when '.md'
+    render_markdown File.read File.join(data_path, file)
+  when '.txt'
     headers["Content-Type"] = "text/plain;charset=utf-8"
-    File.read("#{@root}/data/#{file}")
+    File.read("#{data_path}/#{file}")
   end
 end
 
@@ -29,9 +29,16 @@ def render_markdown(text)
   markdown.render(text)
 end
 
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
+end
+
 before do
-  @root = "/home/user/Launch/170_web_development/cms_app"
-  @files = Dir.entries("#{@root}/data")
+  @files = Dir.entries(data_path)
               .reject { |f| File.directory? f }
               .sort
 end
@@ -46,15 +53,16 @@ get "/:file" do |file|
 end
 
 get "/:file/edit" do |file|
+  check_exists(file)
   @file = file
-  check_exists(@file)
-  @content = File.read("#{@root}/data/#{@file}")
+  @content = File.read File.join(data_path, @file)
 
   erb :edit
 end
 
 post "/:file" do |file|
-  File.open("#{@root}/data/#{file}", "w") do |f|
+  check_exists(file)
+  File.open(File.join(data_path, file), "w") do |f|
     f.write params['content']
   end
   session[:message] = "#{file} is updated! :)"

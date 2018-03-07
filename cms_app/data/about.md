@@ -6,4 +6,4 @@ The unusual appearance of this egg-laying, duck-billed, beaver-tailed, otter-foo
 
 Until the early 20th century humans hunted the platypus for its fur, but it is now protected throughout its range. Although captive-breeding programs have had only limited success and the platypus is vulnerable to the effects of pollution, it is not under any immediate threat.
 
-:\
+:/
