@@ -54,9 +54,8 @@ get "/:file/edit" do |file|
 end
 
 post "/:file" do |file|
-  new_content = params['content']
   File.open("#{@root}/data/#{file}", "w") do |f|
-    f.write new_content
+    f.write params['content']
   end
   session[:message] = "#{file} is updated! :)"
   redirect "/"
