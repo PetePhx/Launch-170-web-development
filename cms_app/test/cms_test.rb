@@ -39,7 +39,7 @@ class AppTest < Minitest::Test
 
     get last_response["Location"]
     assert_equal 200, last_response.status
-    assert_includes last_response.body, "virus.exe does not exist. :)"
+    assert_includes last_response.body, "virus.exe does not exist. :("
   end
 
   def test_viewing_markdown_document

@@ -8,6 +8,22 @@ configure do
   enable :sessions
 end
 
+def check_exists(file)
+  return if @files.include?(file)
+  session[:message] = "#{file} does not exist. :("
+  redirect "/"
+end
+
+def load_file(file)
+  case file.split('.').last
+  when 'md'
+    render_markdown File.read("#{@root}/data/#{file}")
+  when 'txt'
+    headers["Content-Type"] = "text/plain;charset=utf-8"
+    File.read("#{@root}/data/#{file}")
+  end
+end
+
 def render_markdown(text)
   markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
   markdown.render(text)
@@ -25,18 +41,25 @@ get "/" do
 end
 
 get "/:file" do |file|
-  unless @files.include? file
-    session[:error] = "#{file} does not exist. :)"
-    redirect "/"
-  end
+  check_exists(file)
+  load_file(file)
+end
 
-  case file.split('.').last
-  when 'md'
-    render_markdown File.read("#{@root}/data/#{file}")
-  when 'txt'
-    headers["Content-Type"] = "text/plain;charset=utf-8"
-    File.read("#{@root}/data/#{file}")
+get "/:file/edit" do |file|
+  @file = file
+  @content = File.read("#{@root}/data/#{@file}")
+  check_exists(@file)
+
+  erb :edit
+end
+
+post "/:file" do |file|
+  new_content = params['content']
+  File.open("#{@root}/data/#{file}", "w") do |f|
+    f.write new_content
   end
+  session[:message] = "#{file} is updated! :)"
+  redirect "/"
 end
 
 # not_found do

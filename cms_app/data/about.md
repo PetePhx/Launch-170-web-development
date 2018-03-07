@@ -5,3 +5,5 @@ The platypus (Ornithorhynchus anatinus), sometimes referred to as the duck-bille
 The unusual appearance of this egg-laying, duck-billed, beaver-tailed, otter-footed mammal baffled European naturalists when they first encountered it, with some considering it an elaborate hoax. It is one of the few species of venomous mammals: the male platypus has a spur on the hind foot that delivers a venom capable of causing severe pain to humans. The unique features of the platypus make it an important subject in the study of evolutionary biology and a recognisable and iconic symbol of Australia; it has appeared as a mascot at national events and features on the reverse of the Australian twenty-cent coin. The platypus is the animal emblem of the state of New South Wales.[5]
 
 Until the early 20th century humans hunted the platypus for its fur, but it is now protected throughout its range. Although captive-breeding programs have had only limited success and the platypus is vulnerable to the effects of pollution, it is not under any immediate threat.
+
+:\
