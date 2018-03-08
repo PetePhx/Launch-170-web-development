@@ -67,7 +67,7 @@ class AppTest < Minitest::Test
 
     get last_response["Location"]
     assert_equal 200, last_response.status
-    assert_includes last_response.body, "virus.exe does not exist. :("
+    assert_includes last_response.body, "\"virus.exe\" does not exist. :("
   end
 
   def test_viewing_markdown_document
@@ -96,7 +96,7 @@ class AppTest < Minitest::Test
     assert_equal 302, last_response.status
 
     get last_response["Location"]
-    assert_includes last_response.body, "changes.txt is updated! :)"
+    assert_includes last_response.body, "\"changes.txt\" is updated! :)"
 
     get "/changes.txt"
     assert_equal 200, last_response.status
@@ -116,7 +116,7 @@ class AppTest < Minitest::Test
     assert_equal 302, last_response.status
 
     get last_response["Location"]
-    assert_includes last_response.body, "test.txt is created"
+    assert_includes last_response.body, "\"test.txt\" is created"
 
     get "/"
     assert_includes last_response.body, "test.txt"
@@ -126,5 +126,19 @@ class AppTest < Minitest::Test
     post "/create", filename: ""
     assert_equal 422, last_response.status
     assert_includes last_response.body, "A name is required"
+  end
+
+  def test_deleting_document
+    create_document("test.txt")
+
+    post "/test.txt/destroy"
+
+    assert_equal 302, last_response.status
+
+    get last_response["Location"]
+    assert_includes last_response.body, "\"test.txt\" is deleted! (buh-bye)"
+
+    get "/"
+    refute_includes last_response.body, "test.txt"
   end
 end

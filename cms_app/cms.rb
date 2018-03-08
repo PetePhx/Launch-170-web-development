@@ -10,7 +10,7 @@ end
 
 def check_exists(file)
   return if @files.include?(file)
-  session[:message] = "#{file} does not exist. :("
+  session[:message] = "\"#{file}\" does not exist. :("
   redirect "/"
 end
 
@@ -62,7 +62,7 @@ post "/create" do
     erb :new
   else
     File.open(File.join(data_path, filename), "w") {}
-    session[:message] = "#{filename} is created!"
+    session[:message] = "\"#{filename}\" is created! (yay)"
     redirect "/"
   end
 end
@@ -81,12 +81,21 @@ get "/:file/edit" do |file|
   erb :edit
 end
 
+post "/:file/destroy" do |file|
+  check_exists(file)
+  case File.delete File.join(data_path, file)
+  when 1 then session[:message] = "\"#{file}\" is deleted! (buh-bye)"
+  else session[:message] = "Hmmm... something ain't right!"
+  end
+  redirect "/"
+end
+
 post "/:file" do |file|
   check_exists(file)
   File.open(File.join(data_path, file), "w") do |f|
     f.write params['content']
   end
-  session[:message] = "#{file} is updated! :)"
+  session[:message] = "\"#{file}\" is updated! :)"
   redirect "/"
 end
 
