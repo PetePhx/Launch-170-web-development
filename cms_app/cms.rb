@@ -40,11 +40,28 @@ before do
   @files = Dir.entries(data_path)
               .reject { |f| File.directory? f }
               .sort
-  @title = "CMS"
+  @title = "cms"
 end
 
 get "/" do
   erb :index
+end
+
+get "/new" do
+  @title += " | new file"
+  erb :new
+end
+
+post "/create" do
+  if (filename = params['filename'].strip).empty?
+    session[:message] = "A name is required! :|"
+    status 422
+    erb :new
+  else
+    File.open(File.join(data_path, filename), "w") {}
+    session[:message] = "#{filename} is created!"
+    redirect "/"
+  end
 end
 
 get "/:file" do |file|
@@ -69,6 +86,7 @@ post "/:file" do |file|
   session[:message] = "#{file} is updated! :)"
   redirect "/"
 end
+
 
 # not_found do
 #   "BAD URL."
