@@ -9,6 +9,20 @@
   </li>
   <% end %>
 </ul>
+
 <div>
   <p><a href="/new">New Document!</a></p>
+</div>
+
+<div>
+  <% if signed_in? %>
+    <form action="/signout" method="get">
+      <label for="signout">signed is as <%= user %></label>
+      <button name="signout" type="submit">sign out</button>
+    </form>
+  <% else %>
+    <form action="/signin" method="get">
+      <button type="submit">sign in</button>
+    </form>
+  <% end %>
 </div>

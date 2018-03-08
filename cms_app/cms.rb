@@ -8,6 +8,25 @@ configure do
   enable :sessions
 end
 
+helpers do
+  def signed_in?
+    session[:signed_in] == true
+  end
+
+  def user
+    session[:user]
+  end
+end
+
+def authenticated?(username: "", password: "")
+  username.downcase == 'admin' && password == 'secret'
+end
+
+def sign_out
+  session[:signed_in] = false
+  session[:user] = nil
+end
+
 def check_exists(file)
   return if @files.include?(file)
   session[:message] = "\"#{file}\" does not exist. :("
@@ -48,6 +67,39 @@ end
 
 get "/" do
   erb :index
+end
+
+get "/signin" do
+  if signed_in?
+    session[:message] = "You are already signed in, mate! ;)"
+    redirect "/"
+  else
+    erb :signin
+  end
+end
+
+post "/signin" do
+  if authenticated?(username: params['username'], password: params['password'])
+    session[:signed_in] = true
+    session[:user] = 'admin'
+    session[:message] = "Welcome!"
+    redirect "/"
+  else
+    session[:message] = "Invalid Credentials. TRY HARDER!"
+    erb :signin
+  end
+end
+
+get "/signout" do
+  if signed_in?
+    session[:signed_in] = false
+    session[:user] = nil
+    session['message'] = "You have been signed out! buh-bye."
+    redirect "/"
+  else
+    session[:message] = "You are already signed out, bud! ;)"
+    redirect "/"
+  end
 end
 
 get "/new" do
