@@ -21,6 +21,9 @@ def load_file(file)
   when '.txt'
     headers["Content-Type"] = "text/plain;charset=utf-8"
     File.read("#{data_path}/#{file}")
+  else
+    session[:message] = "Can't display \"#{file}\" (sorry not sorry)!"
+    redirect "/"
   end
 end
 
