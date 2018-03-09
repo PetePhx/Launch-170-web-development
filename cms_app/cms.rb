@@ -3,6 +3,7 @@ require "sinatra/reloader" if development?
 require "sinatra/content_for"
 require "tilt/erubis"
 require "redcarpet"
+require "yaml"
 
 configure do
   enable :sessions
@@ -18,8 +19,18 @@ helpers do
   end
 end
 
-def authenticated?(username: "", password: "")
-  username.downcase == 'admin' && password == 'secret'
+def authenticate(username: "", password: "")
+  # username.downcase == 'admin' && password == 'secret'
+  user_creds = YAML.load_file case ENV["RACK_ENV"]
+                              when "test"
+                                File.expand_path("../test/users.yml", __FILE__)
+                              else
+                                File.expand_path("../users.yml", __FILE__)
+                              end
+  if user_creds[username.to_sym] == password
+    session[:signed_in] = true
+    session[:username] = username
+  end
 end
 
 def request_sign_in
@@ -40,13 +51,21 @@ def check_exists(file)
   redirect "/"
 end
 
+def data_path
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/data", __FILE__)
+  else
+    File.expand_path("../data", __FILE__)
+  end
+end
+
 def load_file(file)
   case File.extname(file)
   when '.md'
     erb render_markdown File.read File.join(data_path, file)
   when '.txt'
     headers["Content-Type"] = "text/plain;charset=utf-8"
-    File.read("#{data_path}/#{file}")
+    File.read File.join(data_path, file)
   else
     session[:message] = "Can't display \"#{file}\" (sorry not sorry)!"
     redirect "/"
@@ -55,14 +74,6 @@ end
 
 def render_markdown(text)
   Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(text)
-end
-
-def data_path
-  if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/data", __FILE__)
-  else
-    File.expand_path("../data", __FILE__)
-  end
 end
 
 before do
@@ -86,9 +97,7 @@ get "/users/signin" do
 end
 
 post "/users/signin" do
-  if authenticated?(username: params['username'], password: params['password'])
-    session[:signed_in] = true
-    session[:username] = 'admin'
+  if authenticate(username: params['username'], password: params['password'])
     session[:message] = "Welcome!"
     redirect "/"
   else
@@ -99,7 +108,7 @@ post "/users/signin" do
 end
 
 post "/users/signout" do
-  if signed_in?
+  unless signed_in?
     session[:message] = "You are already signed out, bud! ;)"
     redirect "/"
   end
