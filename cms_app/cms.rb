@@ -22,9 +22,16 @@ def authenticated?(username: "", password: "")
   username.downcase == 'admin' && password == 'secret'
 end
 
+def request_sign_in
+  session[:message] = "You must be signed in to do that. ;)"
+  redirect "/"
+end
+
 def sign_out
   session[:signed_in] = false
   session[:username] = nil
+  session['message'] = "You have been signed out! buh-bye."
+  redirect "/"
 end
 
 def check_exists(file)
@@ -93,22 +100,20 @@ end
 
 post "/users/signout" do
   if signed_in?
-    session[:signed_in] = false
-    session[:username] = nil
-    session['message'] = "You have been signed out! buh-bye."
-    redirect "/"
-  else
     session[:message] = "You are already signed out, bud! ;)"
     redirect "/"
   end
+  sign_out
 end
 
 get "/new" do
+  request_sign_in unless signed_in?
   @title += " | new file"
   erb :new
 end
 
 post "/create" do
+  request_sign_in unless signed_in?
   if (filename = params['filename'].strip).empty?
     session[:message] = "A name is required! :|"
     status 422
@@ -126,6 +131,7 @@ get "/:file" do |file|
 end
 
 get "/:file/edit" do |file|
+  request_sign_in unless signed_in?
   check_exists(file)
   @title += " | #{file}"
   @file = file
@@ -135,6 +141,7 @@ get "/:file/edit" do |file|
 end
 
 post "/:file/destroy" do |file|
+  request_sign_in unless signed_in?
   check_exists(file)
   case File.delete File.join(data_path, file)
   when 1 then session[:message] = "\"#{file}\" is deleted! (buh-bye)"
@@ -144,6 +151,7 @@ post "/:file/destroy" do |file|
 end
 
 post "/:file" do |file|
+  request_sign_in unless signed_in?
   check_exists(file)
   File.open(File.join(data_path, file), "w") do |f|
     f.write params['content']
