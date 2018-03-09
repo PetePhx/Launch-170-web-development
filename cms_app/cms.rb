@@ -14,7 +14,7 @@ helpers do
   end
 
   def user
-    session[:user]
+    session[:username]
   end
 end
 
@@ -24,7 +24,7 @@ end
 
 def sign_out
   session[:signed_in] = false
-  session[:user] = nil
+  session[:username] = nil
 end
 
 def check_exists(file)
@@ -81,7 +81,7 @@ end
 post "/users/signin" do
   if authenticated?(username: params['username'], password: params['password'])
     session[:signed_in] = true
-    session[:user] = 'admin'
+    session[:username] = 'admin'
     session[:message] = "Welcome!"
     redirect "/"
   else
@@ -94,7 +94,7 @@ end
 post "/users/signout" do
   if signed_in?
     session[:signed_in] = false
-    session.delete(:user)
+    session[:username] = nil
     session['message'] = "You have been signed out! buh-bye."
     redirect "/"
   else
