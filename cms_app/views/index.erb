@@ -16,12 +16,13 @@
 
 <div>
   <% if signed_in? %>
-    <form action="/signout" method="get">
-      <label for="signout">signed is as <%= user %></label>
-      <button name="signout" type="submit">sign out</button>
+    <form action="/users/signout" method="post">
+      <p class="user-status">Signed in as <%= user %>
+      <button type="submit" style="display: inline;">sign out</button>
+      </p>
     </form>
   <% else %>
-    <form action="/signin" method="get">
+    <form action="/users/signin" method="get">
       <button type="submit">sign in</button>
     </form>
   <% end %>

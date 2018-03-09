@@ -69,7 +69,7 @@ get "/" do
   erb :index
 end
 
-get "/signin" do
+get "/users/signin" do
   if signed_in?
     session[:message] = "You are already signed in, mate! ;)"
     redirect "/"
@@ -78,7 +78,7 @@ get "/signin" do
   end
 end
 
-post "/signin" do
+post "/users/signin" do
   if authenticated?(username: params['username'], password: params['password'])
     session[:signed_in] = true
     session[:user] = 'admin'
@@ -86,14 +86,15 @@ post "/signin" do
     redirect "/"
   else
     session[:message] = "Invalid Credentials. TRY HARDER!"
+    status 422
     erb :signin
   end
 end
 
-get "/signout" do
+post "/users/signout" do
   if signed_in?
     session[:signed_in] = false
-    session[:user] = nil
+    session.delete(:user)
     session['message'] = "You have been signed out! buh-bye."
     redirect "/"
   else

@@ -1,11 +1,11 @@
-<form action="/signin" method="post">
+<form action="/users/signin" method="post">
   <div>
     <label for="username">Username:</label>
     <input type="text" name="username" value="<%= params['username'] || ''%>"/>
   </div>
   <div>
     <label for="password">Password:</label>
-    <input type="text" name="password"/>
+    <input type="password" name="password"/>
   </div>
   <button type="submit">sign in</button>
 </form>
