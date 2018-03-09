@@ -4,6 +4,7 @@ require "sinatra/content_for"
 require "tilt/erubis"
 require "redcarpet"
 require "yaml"
+require "bcrypt"
 
 configure do
   enable :sessions
@@ -20,14 +21,15 @@ helpers do
 end
 
 def authenticate(username: "", password: "")
-  # username.downcase == 'admin' && password == 'secret'
-  user_creds = YAML.load_file case ENV["RACK_ENV"]
-                              when "test"
-                                File.expand_path("../test/users.yml", __FILE__)
-                              else
-                                File.expand_path("../users.yml", __FILE__)
-                              end
-  if user_creds[username.to_sym] == password
+  creds = YAML.load_file File.expand_path(case ENV["RACK_ENV"]
+                                               when "test"
+                                                 "../test/users.yml"
+                                               else
+                                                 "../users.yml"
+                                               end, __FILE__)
+
+  if creds.key?(username.to_sym) &&
+     BCrypt::Password.new(creds[username.to_sym]) == password
     session[:signed_in] = true
     session[:username] = username
   end
@@ -52,11 +54,10 @@ def check_exists(file)
 end
 
 def data_path
-  if ENV["RACK_ENV"] == "test"
-    File.expand_path("../test/data", __FILE__)
-  else
-    File.expand_path("../data", __FILE__)
-  end
+  File.expand_path(case ENV["RACK_ENV"]
+                   when "test" then "../test/data"
+                   else "../data"
+                   end, __FILE__)
 end
 
 def load_file(file)
