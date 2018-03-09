@@ -32,7 +32,7 @@ class AppTest < Minitest::Test
   end
 
   def admin_session
-    { "rack.session" => { username: "admin" } }
+    { "rack.session" => { signed_in: true, username: "admin" } }
   end
 
   def test_index
@@ -177,7 +177,7 @@ class AppTest < Minitest::Test
   def test_deleting_document_signed_out
     create_document("test.txt")
 
-    post "/test.txt/delete"
+    post "/test.txt/destroy"
     assert_equal 302, last_response.status
     assert_equal "You must be signed in to do that. ;)", session[:message]
   end
