@@ -1,8 +1,12 @@
-<form action="/create" method="post">
+<form class="inline" action="/create" method="post">
   <label for="filename">Add a new document:</label>
   <div>
     <input type="text" name="filename"
     placeholder="Enter file name right here!"/>
-    <button type="submit" value="submit">create</button>
   </div>
+    <button type="submit" value="submit">create</button>
+</form>
+
+<form class="inline" action="/" method="get">
+  <button type="submit"  style="display: inline;">cancel</button>
 </form>

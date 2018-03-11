@@ -81,6 +81,18 @@ def valid_extention?(file)
   File.extname(file) == '.txt' || File.extname(file) == '.md'
 end
 
+def new_name(file)
+  base = File.basename(file, ".*")
+  ext = File.extname(file)
+  tail = base.match(/_copy_(\d+)\z/)
+
+  n = (tail.nil? ? 1 : tail[1].to_i + 1)
+  base += "_copy_1" if tail.nil?
+  while @files.include? "#{base.gsub(/\d+\z/, n.to_s)}#{ext}" do n += 1 end
+
+  "#{base.gsub(/\d+\z/, n.to_s)}#{ext}"
+end
+
 before do
   # .reject { |f| File.directory? f }
   @files = Dir.entries(data_path)
@@ -158,6 +170,20 @@ get "/:file/edit" do |file|
   @content = File.read File.join(data_path, @file)
 
   erb :edit
+end
+
+post "/:file/duplicate" do |file|
+  request_sign_in unless signed_in?
+  check_exists(file)
+  new_file = new_name(file)
+  FileUtils.cp(File.join(data_path, file),
+    File.join(data_path, new_file))
+  session[:message] = "\"#{file}\" is copied to \"#{new_file}\"!"
+  # case File.delete File.join(data_path, file)
+  # when 1 then session[:message] = "\"#{file}\" is deleted! (buh-bye)"
+  # else session[:message] = "Hmmm... something ain't right!"
+  # end
+  redirect "/"
 end
 
 post "/:file/destroy" do |file|
