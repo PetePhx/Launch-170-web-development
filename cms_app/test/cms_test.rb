@@ -72,7 +72,8 @@ class AppTest < Minitest::Test
   def test_document_not_found
     get "/virus.exe"
     assert_equal 302, last_response.status
-    assert_equal "\"virus.exe\" does not exist. :(", session[:message]
+    assert_equal "\"virus.exe\" does not exist or can't be displayed. :(",
+      session[:message]
   end
 
   def test_viewing_markdown_document

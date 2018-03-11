@@ -49,7 +49,7 @@ end
 
 def check_exists(file)
   return if @files.include?(file)
-  session[:message] = "\"#{file}\" does not exist. :("
+  session[:message] = "\"#{file}\" does not exist or can't be displayed. :("
   redirect "/"
 end
 
@@ -77,9 +77,14 @@ def render_markdown(text)
   Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(text)
 end
 
+def valid_extention?(file)
+  File.extname(file) == '.txt' || File.extname(file) == '.md'
+end
+
 before do
+  # .reject { |f| File.directory? f }
   @files = Dir.entries(data_path)
-              .reject { |f| File.directory? f }
+              .select { |f| valid_extention? f }
               .sort
   @title = "cms"
 end
@@ -124,8 +129,13 @@ end
 
 post "/create" do
   request_sign_in unless signed_in?
-  if (filename = params['filename'].strip).empty?
+  filename = params['filename'].strip
+  if filename.empty?
     session[:message] = "A name is required! :|"
+    status 422
+    erb :new
+  elsif !valid_extention?(filename)
+    session[:message] = "Valid extensions are: \".txt\" and \".md\"."
     status 422
     erb :new
   else
