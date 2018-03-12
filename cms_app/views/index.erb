@@ -25,8 +25,11 @@
       </p>
     </form>
   <% else %>
-    <form action="/users/signin" method="get">
+    <form class="inline" action="/users/signin" method="get">
       <button type="submit">sign in</button>
+    </form>
+    <form class="inline" action="/users/signup" method="get">
+      <button type="submit">sign up</button>
     </form>
   <% end %>
 </div>

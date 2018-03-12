@@ -133,6 +133,18 @@ post "/users/signout" do
   sign_out
 end
 
+get "/users/signup" do
+  if signed_in?
+    session[:message] = "You need to sign out in order to sign up!"
+    redirect "/"
+  end
+  erb :signup
+end
+
+post "/users/signup" do
+  
+end
+
 get "/new" do
   request_sign_in unless signed_in?
   @title += " | new file"
@@ -205,6 +217,8 @@ post "/:file" do |file|
   session[:message] = "\"#{file}\" is updated! :)"
   redirect "/"
 end
+
+
 
 
 # not_found do

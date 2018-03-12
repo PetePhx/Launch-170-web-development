@@ -1,0 +1,17 @@
+<form action="/users/signup" method="post">
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" name="username" value="<%= params['username'] || ''%>"/>
+  </div>
+  <br>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" name="password"/>
+  </div>
+  <div>
+    <label for="password_repeat">Password (repeat):</label>
+    <input type="password" name="password_repeat"/>
+  </div>
+  <br>
+  <button type="submit">sign up</button>
+</form>
