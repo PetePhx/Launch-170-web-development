@@ -3,13 +3,17 @@ body {
   font-family: sans-serif;
 }
 
+form.inline {
+  display: inline;
+}
+
+td.file {
+  padding: 0px 20px 0px 0px;
+}
+
 .message {
   padding: 10px;
   background: #FFFF99;
-}
-
-form.inline {
-  display: inline;
 }
 
 .user-status {

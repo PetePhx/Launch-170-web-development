@@ -1,17 +1,23 @@
-<ul>
+<table>
   <% @files.each do |file| %>
-  <li>
-    <a href="/<%= file %>"><%= file %></a>
-    <a href="/<%= file %>/edit">edit</a>
-    <form class="inline" action="/<%= file %>/duplicate" method="post">
-      <button type="submit">duplicate</button>
-    </form>
-    <form class="inline" action="/<%= file %>/destroy" method="post">
-      <button type="submit">delete</button>
-    </form>
-  </li>
+  <tr>
+    <td class="file">
+      <a href="/<%= file %>"><%= file %></a>
+    </td>
+    <td>
+      <form class="inline" action="/<%= file %>/edit" method="get">
+        <button type="submit">edit</button>
+      </form>
+      <form class="inline" action="/<%= file %>/duplicate" method="post">
+        <button type="submit">duplicate</button>
+      </form>
+      <form class="inline" action="/<%= file %>/destroy" method="post">
+        <button type="submit">delete</button>
+      </form>
+    </td>
+  </tr>
   <% end %>
-</ul>
+</table>
 
 <div>
   <p><a href="/new">New Document!</a></p>
