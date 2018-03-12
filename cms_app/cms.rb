@@ -21,18 +21,24 @@ helpers do
 end
 
 def authenticate(username: "", password: "")
-  creds = YAML.load_file File.expand_path(case ENV["RACK_ENV"]
-                                               when "test"
-                                                 "../test/users.yml"
-                                               else
-                                                 "../users.yml"
-                                               end, __FILE__)
+  creds = YAML.load_file creds_path
 
   if creds.key?(username.to_sym) &&
      BCrypt::Password.new(creds[username.to_sym]) == password
     session[:signed_in] = true
     session[:username] = username
   end
+end
+
+def users_all
+  YAML.load_file(creds_path).keys
+end
+
+def add_creds(username: "", password: "")
+  return if username.empty? || password.empty?
+  creds = YAML.load_file creds_path
+  creds[username.to_sym] = BCrypt::Password.create(password).to_s
+  File.open(creds_path, "w") { |f| f.write YAML.dump creds }
 end
 
 def request_sign_in
@@ -57,6 +63,15 @@ def data_path
   File.expand_path(case ENV["RACK_ENV"]
                    when "test" then "../test/data"
                    else "../data"
+                   end, __FILE__)
+end
+
+def creds_path
+  File.expand_path(case ENV["RACK_ENV"]
+                   when "test"
+                     "../test/users.yml"
+                   else
+                     "../users.yml"
                    end, __FILE__)
 end
 
@@ -142,7 +157,27 @@ get "/users/signup" do
 end
 
 post "/users/signup" do
-  
+  username = params['username'].strip
+  password = params['password']
+  pass_conf = params['password_confirm']
+
+  if !(1..20).cover?(username.size)
+    session[:message] = "The username should be between 1 and 20 chars long!"
+    erb :signup
+  elsif users_all.include? username.to_sym
+    session[:message] = "The username #{username} already exists!"
+    erb :signup
+  elsif !(1..20).cover?(password.size)
+    session[:message] = "The password should be between 1 and 20 chars long!"
+    erb :signup
+  elsif password != pass_conf
+    session[:message] = "The password and the confirmation don't match!"
+    erb :signup
+  else
+    add_creds(username: username, password: password)
+    session[:message] = "The user \"#{username}\" successfully created!"
+    redirect "/"
+  end
 end
 
 get "/new" do

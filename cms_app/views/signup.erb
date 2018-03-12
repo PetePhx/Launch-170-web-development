@@ -1,4 +1,4 @@
-<form action="/users/signup" method="post">
+<form class="inline" action="/users/signup" method="post">
   <div>
     <label for="username">Username:</label>
     <input type="text" name="username" value="<%= params['username'] || ''%>"/>
@@ -6,12 +6,16 @@
   <br>
   <div>
     <label for="password">Password:</label>
-    <input type="password" name="password"/>
+    <input type="password" name="password"
+      value="<%= params['username'] || ''%>"/>
   </div>
   <div>
-    <label for="password_repeat">Password (repeat):</label>
-    <input type="password" name="password_repeat"/>
+    <label for="password_confirm">Confirm Password:</label>
+    <input type="password" name="password_confirm"/>
   </div>
   <br>
   <button type="submit">sign up</button>
+</form>
+<form class="inline" action="/" method="get">
+  <button type="submit"  style="display: inline;">cancel</button>
 </form>
