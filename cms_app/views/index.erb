@@ -19,8 +19,24 @@
   <% end %>
 </table>
 
+<table>
+  <% @images.each do |image| %>
+  <tr>
+    <td class="file">
+      <p><%= image %></p>
+    </td>
+    <td>
+      <form class="inline" action="/<%= image %>/destroy" method="post">
+        <button type="submit">delete</button>
+      </form>
+    </td>
+  </tr>
+  <% end %>
+</table>
+
 <div>
   <p><a href="/new">New Document!</a></p>
+  <p><a href="/upload">Upload Image!</a></p>
 </div>
 
 <div>

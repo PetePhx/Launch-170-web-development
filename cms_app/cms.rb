@@ -59,6 +59,21 @@ def check_exists(file)
   redirect "/"
 end
 
+def valid_extention?(file)
+  ['.txt', '.md'].include? File.extname(file)
+end
+
+def check_image_exists(image)
+  return if @images.include?(image)
+  session[:message] = "\"#{image}\" does not exist. :("
+  redirect "/"
+end
+
+def valid_image?(image)
+  ['.jpg', '.png'].include? File.extname(image)
+end
+
+
 def data_path
   File.expand_path(case ENV["RACK_ENV"]
                    when "test" then "../test/data"
@@ -92,10 +107,6 @@ def render_markdown(text)
   Redcarpet::Markdown.new(Redcarpet::Render::HTML).render(text)
 end
 
-def valid_extention?(file)
-  File.extname(file) == '.txt' || File.extname(file) == '.md'
-end
-
 def new_name(file)
   base = File.basename(file, ".*")
   ext = File.extname(file)
@@ -113,10 +124,14 @@ before do
   @files = Dir.entries(data_path)
               .select { |f| valid_extention? f }
               .sort
+  @images = Dir.entries(data_path)
+              .select { |f| valid_image? f }
+              .sort
   @title = "cms"
 end
 
 get "/" do
+  @title += " | home"
   erb :index
 end
 
@@ -125,6 +140,7 @@ get "/users/signin" do
     session[:message] = "You are already signed in, mate! ;)"
     redirect "/"
   else
+    @title += " | signin"
     erb :signin
   end
 end
@@ -153,6 +169,7 @@ get "/users/signup" do
     session[:message] = "You need to sign out in order to sign up!"
     redirect "/"
   end
+  @title += " | signup"
   erb :signup
 end
 
@@ -204,8 +221,25 @@ post "/create" do
   end
 end
 
+get "/upload" do
+  request_sign_in unless signed_in?
+  @title += " | upload"
+  erb :upload
+end
+
+post "/upload" do
+    request_sign_in unless signed_in?
+    tempfile = params[:file][:tempfile]
+    file = params[:file][:filename]
+    FileUtils.cp(tempfile.path, File.join(data_path, file))
+
+    session[:message] = "\"#{file}\" is uploaded!"
+    redirect "/"
+end
+
 get "/:file" do |file|
   check_exists(file)
+  # @title += " | #{file}"
   load_file(file)
 end
 
@@ -226,16 +260,14 @@ post "/:file/duplicate" do |file|
   FileUtils.cp(File.join(data_path, file),
     File.join(data_path, new_file))
   session[:message] = "\"#{file}\" is copied to \"#{new_file}\"!"
-  # case File.delete File.join(data_path, file)
-  # when 1 then session[:message] = "\"#{file}\" is deleted! (buh-bye)"
-  # else session[:message] = "Hmmm... something ain't right!"
-  # end
   redirect "/"
 end
 
 post "/:file/destroy" do |file|
   request_sign_in unless signed_in?
-  check_exists(file)
+  check_exists(file) if valid_extention?(file)
+  check_image_exists(file) if valid_image?(file)
+
   case File.delete File.join(data_path, file)
   when 1 then session[:message] = "\"#{file}\" is deleted! (buh-bye)"
   else session[:message] = "Hmmm... something ain't right!"
@@ -252,10 +284,3 @@ post "/:file" do |file|
   session[:message] = "\"#{file}\" is updated! :)"
   redirect "/"
 end
-
-
-
-
-# not_found do
-#   "BAD URL."
-# end
