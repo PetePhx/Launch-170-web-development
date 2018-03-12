@@ -1,4 +1,4 @@
-<form action="/users/signin" method="post">
+<form class="inline" action="/users/signin" method="post">
   <div>
     <label for="username">Username:</label>
     <input type="text" name="username" value="<%= params['username'] || ''%>"/>
@@ -8,4 +8,8 @@
     <input type="password" name="password"/>
   </div>
   <button type="submit">sign in</button>
+</form>
+
+<form class="inline" action="/" method="get">
+  <button type="submit"  style="display: inline;">cancel</button>
 </form>

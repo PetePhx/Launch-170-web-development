@@ -1,8 +1,12 @@
-<form action="/<%= @file %>" method="post">
+<form class="inline" action="/<%= @file %>" method="post">
   <label for="content">Edit contents of <%= @file %>:</label>
   <div>
     <textarea rows=10 cols=75 name="content"
     ><%= @content %></textarea>
   </div>
   <button type="submit">Save Changes</button>
+</form>
+
+<form class="inline" action="/" method="get">
+  <button type="submit"  style="display: inline;">cancel</button>
 </form>
