@@ -97,6 +97,9 @@ def load_file(file)
   when '.txt'
     headers["Content-Type"] = "text/plain;charset=utf-8"
     File.read File.join(data_path, file)
+  when '.jpg', '.png'
+    headers["Content-Type"] = "image/#{File.extname(file)[1..-1]}"
+    File.read File.join(data_path, file)
   else
     session[:message] = "Can't display \"#{file}\" (sorry not sorry)!"
     redirect "/"
@@ -238,8 +241,9 @@ post "/upload" do
 end
 
 get "/:file" do |file|
-  check_exists(file)
-  # @title += " | #{file}"
+  check_exists(file) if valid_extention?(file)
+  check_image_exists(file) if valid_image?(file)
+
   load_file(file)
 end
 

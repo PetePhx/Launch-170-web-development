@@ -1,3 +1,4 @@
+<h3>Text Files:</h3>
 <table>
   <% @files.each do |file| %>
   <tr>
@@ -19,11 +20,12 @@
   <% end %>
 </table>
 
+<h3>Images:</h3>
 <table>
   <% @images.each do |image| %>
   <tr>
     <td class="file">
-      <p><%= image %></p>
+      <a href="/<%= image %>"><%= image %></a>
     </td>
     <td>
       <form class="inline" action="/<%= image %>/destroy" method="post">
