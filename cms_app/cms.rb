@@ -44,7 +44,11 @@ def set_signup_message(username, password, pass_conf)
     !(1..20).cover?(password.size)
   session[:message] << "The password and the confirmation don't match!" if
     password != pass_conf
-  session[:message] = nil if session[:message].empty?
+  if session[:message].empty?
+    session[:message] = nil
+  else
+    session[:message] = session[:message].join('<br/>')
+  end
 end
 
 def add_creds(username: "", password: "")
@@ -114,7 +118,7 @@ def load_file(file)
     headers["Content-Type"] = "image/#{File.extname(file)[1..-1]}"
     File.read File.join(data_path, file)
   else
-    session[:message] = "Can't display \"#{file}\" (sorry not sorry)!"
+    session[:message] = "\"#{file}\" does not exist or can't be displayed. :("
     redirect "/"
   end
 end
@@ -200,7 +204,6 @@ post "/users/signup" do
     session[:message] = "The user \"#{username}\" successfully created!"
     redirect "/"
   else
-    session[:message] = session[:message].join('<br/>')
     erb :signup
   end
 end
