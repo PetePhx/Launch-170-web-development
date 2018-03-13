@@ -34,6 +34,19 @@ def users_all
   YAML.load_file(creds_path).keys
 end
 
+def set_signup_message(username, password, pass_conf)
+  session[:message] = []
+  session[:message] << "The username should be between 1 and 20 chars long!" if
+    !(1..20).cover?(username.size)
+  session[:message] << "The username #{username} already exists!" if
+    users_all.include? username.to_sym
+  session[:message] << "The password should be between 1 and 20 chars long!" if
+    !(1..20).cover?(password.size)
+  session[:message] << "The password and the confirmation don't match!" if
+    password != pass_conf
+  session[:message] = nil if session[:message].empty?
+end
+
 def add_creds(username: "", password: "")
   return if username.empty? || password.empty?
   creds = YAML.load_file creds_path
@@ -59,7 +72,7 @@ def check_exists(file)
   redirect "/"
 end
 
-def valid_extention?(file)
+def valid_text?(file)
   ['.txt', '.md'].include? File.extname(file)
 end
 
@@ -123,9 +136,8 @@ def new_name(file)
 end
 
 before do
-  # .reject { |f| File.directory? f }
   @files = Dir.entries(data_path)
-              .select { |f| valid_extention? f }
+              .select { |f| valid_text? f }
               .sort
   @images = Dir.entries(data_path)
               .select { |f| valid_image? f }
@@ -181,22 +193,15 @@ post "/users/signup" do
   password = params['password']
   pass_conf = params['password_confirm']
 
-  if !(1..20).cover?(username.size)
-    session[:message] = "The username should be between 1 and 20 chars long!"
-    erb :signup
-  elsif users_all.include? username.to_sym
-    session[:message] = "The username #{username} already exists!"
-    erb :signup
-  elsif !(1..20).cover?(password.size)
-    session[:message] = "The password should be between 1 and 20 chars long!"
-    erb :signup
-  elsif password != pass_conf
-    session[:message] = "The password and the confirmation don't match!"
-    erb :signup
-  else
+  set_signup_message(username, password, pass_conf)
+
+  if session[:message].nil?
     add_creds(username: username, password: password)
     session[:message] = "The user \"#{username}\" successfully created!"
     redirect "/"
+  else
+    session[:message] = session[:message].join('<br/>')
+    erb :signup
   end
 end
 
@@ -213,7 +218,7 @@ post "/create" do
     session[:message] = "A name is required! :|"
     status 422
     erb :new
-  elsif !valid_extention?(filename)
+  elsif !valid_text?(filename)
     session[:message] = "Valid extensions are: \".txt\" and \".md\"."
     status 422
     erb :new
@@ -241,7 +246,7 @@ post "/upload" do
 end
 
 get "/:file" do |file|
-  check_exists(file) if valid_extention?(file)
+  check_exists(file) if valid_text?(file)
   check_image_exists(file) if valid_image?(file)
 
   load_file(file)
@@ -269,7 +274,7 @@ end
 
 post "/:file/destroy" do |file|
   request_sign_in unless signed_in?
-  check_exists(file) if valid_extention?(file)
+  check_exists(file) if valid_text?(file)
   check_image_exists(file) if valid_image?(file)
 
   case File.delete File.join(data_path, file)

@@ -7,7 +7,7 @@
   </head>
   <body>
     <% if session[:message] %>
-      <p class="message"><%= session.delete(:message) %></p>
+      <div class="message"><%= session.delete(:message) %></div>
     <% end %>
     <main>
       <%= yield %>
